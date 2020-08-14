@@ -39,6 +39,7 @@ public class MySQLConnection {
 			System.err.println("DB connection failed");
 			return;
 		}
+		// maybe insert item into items table(record all items which have been favorite)
 		saveItem(item);
 		String sql = "INSERT IGNORE INTO history (user_id, item_id) VALUES (?, ?)";
 		try {
@@ -92,6 +93,82 @@ public class MySQLConnection {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public Set<String> getFavoriteItemIds(String userId) {
+		if (conn == null) {
+			System.err.println("DB connection failed");
+			return new HashSet<>();
+		}
+
+		Set<String> favoriteItems = new HashSet<>();
+
+		try {
+			String sql = "SELECT item_id FROM history WHERE user_id = ?";
+			PreparedStatement statement = conn.prepareStatement(sql);
+			statement.setString(1, userId);
+			ResultSet rs = statement.executeQuery();
+			while (rs.next()) {
+				String itemId = rs.getString("item_id");
+				favoriteItems.add(itemId);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return favoriteItems;
+	}
+
+	public Set<Item> getFavoriteItems(String userId) {
+		if (conn == null) {
+			System.err.println("DB connection failed");
+			return new HashSet<>();
+		}
+		Set<Item> favoriteItems = new HashSet<>();
+		Set<String> favoriteItemIds = getFavoriteItemIds(userId);
+
+		String sql = "SELECT * FROM items WHERE item_id = ?";
+		try {
+			PreparedStatement statement = conn.prepareStatement(sql);
+			for (String itemId : favoriteItemIds) {
+				statement.setString(1, itemId);
+				ResultSet rs = statement.executeQuery();
+				if (rs.next()) {
+					favoriteItems.add(Item.builder()
+							.itemId(rs.getString("item_id"))
+							.name(rs.getString("name"))
+							.address(rs.getString("address"))
+							.imageUrl(rs.getString("image_url"))
+							.url(rs.getString("url"))
+							.keywords(getKeywords(itemId))
+							.build());
+				}
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return favoriteItems;
+	}
+
+	public Set<String> getKeywords(String itemId) {
+		if (conn == null) {
+			System.err.println("DB connection failed");
+			return null;
+		}
+		Set<String> keywords = new HashSet<>();
+		String sql = "SELECT keyword from keywords WHERE item_id = ? ";
+		try {
+			PreparedStatement statement = conn.prepareStatement(sql);
+			statement.setString(1, itemId);
+			ResultSet rs = statement.executeQuery();
+			while (rs.next()) {
+				String keyword = rs.getString("keyword");
+				keywords.add(keyword);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return keywords;
 	}
 
 
