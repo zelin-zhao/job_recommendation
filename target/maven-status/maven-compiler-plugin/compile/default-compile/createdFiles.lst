@@ -1,0 +1,11 @@
+db/MySQLConnection.class
+external/GithubClient.class
+db/MySQLTableCreation.class
+rpc/RpcHelper.class
+entity/Item.class
+rpc/SearchItem.class
+rpc/RecommendItem.class
+entity/Item$ItemBuilder.class
+db/MySQLDBUtil.class
+external/GithubClient$1.class
+rpc/itemHistory.class
