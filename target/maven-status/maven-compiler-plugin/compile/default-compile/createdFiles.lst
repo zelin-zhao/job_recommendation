@@ -1,9 +1,12 @@
 db/MySQLConnection.class
 external/GithubClient.class
+rpc/SearchItem.class
+rpc/Register.class
+rpc/Login.class
 db/MySQLTableCreation.class
 rpc/RpcHelper.class
 entity/Item.class
-rpc/SearchItem.class
+rpc/Logout.class
 rpc/RecommendItem.class
 entity/Item$ItemBuilder.class
 db/MySQLDBUtil.class
