@@ -1,6 +1,7 @@
 db/MySQLConnection.class
 external/GithubClient.class
 rpc/SearchItem.class
+external/MonkeyLearnClient.class
 rpc/Register.class
 rpc/Login.class
 db/MySQLTableCreation.class
